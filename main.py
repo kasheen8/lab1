@@ -58,8 +58,14 @@ def pen_prob():
                 P_min = window
                 num_p = iter_p
         iter_p += 1
-    print("Минимальная вероятность - %s" % P_min)
-
+    x_danger = array_dot[(math.floor(num_p / 2))]
+    if num_p // 2 == 0:
+        num_window = 1
+    else:
+        num_window = 2
+    print("Минимальная вероятность проникновения - %s, x проникновения - %s, %s - ое окно" % (P_min, x_danger, num_window))
+    full_list = [x_build1,x_build2,y_build1,y_build2,x_fence,y_fence,x_window1,x_window2,y_window,x_inf,y_inf,x_danger,num_window]
+    return full_list
 
 class Window(Qt.QWidget):
 
@@ -71,8 +77,8 @@ class Window(Qt.QWidget):
         self.view = view = pg.PlotWidget()
         self.curve = view.plot(name="Line1")
         self.curve2 = view.plot(name="Line2")
-
-        self.btn = Qt.QPushButton("Построить графики")
+        self.curve3 = view.plot(name="Line3")
+        self.btn = Qt.QPushButton("Построить схему проникновения")
         self.btn.clicked.connect(self.random_plot)
 
         layout.addWidget(Qt.QLabel("Вероятность проникновения"))
@@ -80,10 +86,14 @@ class Window(Qt.QWidget):
         layout.addWidget(self.btn)
 
     def random_plot(self):
-        pen_prob()
-        self.curve.setData(x = [0,1], y = [4,7])
-        self.curve2.setData(x = [1,0], y = [6,5])
-
+        full = pen_prob()
+        self.curve.setData(x = [full[0],full[1],full[1],full[0],full[0]], y = [full[2],full[2],full[3],full[3],full[2]])
+        self.curve2.setData(x = [0,full[4],full[4]], y = [full[5],full[5],0])
+        if full[12] == 1:
+            x_window = full[6]
+        else:
+            x_window = full[7]
+        self.curve3.setData(x = [full[11],x_window,full[9]], y = [full[5], full[8], full[10]])
 
 if __name__ == "__main__":
     app = Qt.QApplication([])
