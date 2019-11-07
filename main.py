@@ -1,4 +1,4 @@
-from PyQt5 import Qt
+from PyQt5 import Qt, QtGui
 import pyqtgraph as pg
 import numpy as np
 import sys
@@ -75,9 +75,13 @@ class Window(Qt.QWidget):
         layout = Qt.QVBoxLayout(self)
 
         self.view = view = pg.PlotWidget()
+        view.setBackground(QtGui.QColor('green'))
         self.curve = view.plot(name="Line1")
         self.curve2 = view.plot(name="Line2")
         self.curve3 = view.plot(name="Line3")
+        self.curve4 = view.plot(name="Line4")
+        self.curve5 = view.plot(name="Line5")
+        self.cuver6 = view.plot(name="Line6")
         self.btn = Qt.QPushButton("Построить схему проникновения")
         self.btn.clicked.connect(self.random_plot)
 
@@ -87,13 +91,19 @@ class Window(Qt.QWidget):
 
     def random_plot(self):
         full = pen_prob()
-        self.curve.setData(x = [full[0],full[1],full[1],full[0],full[0]], y = [full[2],full[2],full[3],full[3],full[2]])
-        self.curve2.setData(x = [0,full[4],full[4]], y = [full[5],full[5],0])
+        self.curve.setData(x = [full[0],full[1],full[1],full[0],full[0]], y = [full[2],full[2],full[3],full[3],full[2]], pen = 'd')
+        self.curve2.setData(x = [0,full[4],full[4],0,0], y = [full[5],full[5],0,0,full[5]])
         if full[12] == 1:
             x_window = full[6]
         else:
             x_window = full[7]
-        self.curve3.setData(x = [full[11],x_window,full[9]], y = [full[5], full[8], full[10]])
+        self.curve3.setData(x = [full[11],x_window,full[9]], y = [full[5], full[8], full[10]],pen = 'r')
+        self.curve4.setData(x=[full[6] - (full[6] - full[0]) / 5, full[6] + (full[6] - full[0]) / 5],
+                            y=[full[8], full[8]], pen='b')
+        self.curve5.setData(x=[full[7] - (full[1] - full[7]) / 5, full[7] + (full[1] - full[7]) / 5],
+                            y=[full[8], full[8]], pen='b')
+        self.cuver6.setData(x=[full[9] - 1, full[9] - 1, full[9] + 1, full[9] + 1, full[9] - 1],
+                            y=[full[10] - 1, full[10] + 1, full[10] + 1, full[10] - 1, full[10] - 1], pen='y')
 
 if __name__ == "__main__":
     app = Qt.QApplication([])
